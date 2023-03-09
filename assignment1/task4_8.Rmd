@@ -1,37 +1,108 @@
-ways to arrange 100 genes in triples?
-Task 5 - Using R example datasets
+---
+title: "Heatmap of foldchanges"
+author: "Hong Jiang"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    fig_caption: yes
+    theme:
+      bootswatch: sandstone
+      base_font:
+        "Arial"
+      code_font:
+        google: "JetBrains Mono"
+      progress-bar-bg: "orange"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE
+)
+```
+```{r library}
+suppressWarnings(library(dplyr)
+                 library(remotes))
+```
+## Task 4
+1. What is the square root of 10?
+```{r task4.1}
+sqrt(10)
+```
+2. What is the logarithm of 32 to the base 2?
+```{r task4.2}
+log2(32)
+```
+3. What is the sum of the numbers from 1 to 1000?
+```{r task4.3}
+sum(c(1:1000))
+```
+4. What is the sum of all even numbers from 2 to 1000?
+```{r task4.4}
+sum(seq(2,1000,2))
+```
+5. How many pairwise comparisons are there for 100 genes?
+```{r task4.5}
+choose(100, 2)
+```
+6. And how many ways to arrange 100 genes in triples?
+```{r task4.5}
+factorial(100)
+```
+## Task 5 - Using R example datasets
 1. Use the R internal CO2 dataset (“data(CO2)”).
+```{r task5.1}
+data(CO2)
+```
 2. Describe briefly the content of the CO2 dataset using the help function.
+```{r task5.2}
+help(CO2)
+```
 3. What is the average and median CO2 uptake of the plants from Quebec and
 Mississippi?
+```{r task5.3}
+CO2 |>
+  group_by(Type) |>
+  summarise(mean = mean(uptake), median = median(uptake))
+```
 4. [Optional] In the “airway” example data from Bioconductor, how many genes are
 expressed in each sample? How many genes are not expressed in any sample?
-Task 6 - R Functions
+## Task 6 - R Functions
 1. Write a function that calculates the ratio of the mean and the median of a given
 vector.
-5
-This is a helpful measure to detect data with outlying values.
-Note: See Reference for R language
+```{r task6.1}
+mean_by_median <- function(v) {
+  ## omit na?
+  mean(v) / median(v)
+}
+```
+
 2. Write a function that ignores the lowest and the highest value from a given vector and
 calculate the mean.
+```{r task6.2}
+mean_noextreme <- function(v) {
+  mean(sort(v)[c(-1:-length(v))])
+}
+```
 3. Read about piping from here:https://r4ds.had.co.nz/pipes.html#pipes (you don’t have
 to learn everything, a basic understanding of the usage is enough). Write a short
 (max. 300 characters, no spaces) explanation of why, how, and when not to use
-pipes.
+pipes.  
+- why: more clean and readable
+- how: |>
+- when not: multiple inputs or branches or pipes are too long, consider modulize instead
 4. Familiarize yourself with the apply-family of functions (apply, lapply, sapply etc.)
 http://uc-r.github.io/apply_family
 Write a short explanation (max. 300 characters, no spaces) of why they could be
-useful in your work.
-Task 7 - Basic visualization with R
-Comment: Files are provided in the shared Google Drive folder under Course week 1.
-Examples of how to use visualization functions in R and other highly useful information that
-may aid you during the course can be found here https://guardacaccia.github.io/Teaching/
-The nummenmaa-package mentioned within the examples can be installed with the code
-below if you wish to try some of the examples yourself.
-install.packages("remotes")
-library(remotes)
-install_url("http://emotion.utu.fi/wp-content/uploads/2019/11
-/nummenmaa_1.0.tar.gz",dependencies=TRUE)
+useful in your work.  
+  1. vectorize speed up the processes on elements in the alterable objects. 
+  2. reduce replicated work
+## Task 7 - Basic visualization with R
 1. Compare the distributions of the body heights of the two species from the
 'magic_guys.csv' dataset graphically
 a. using the basic 'hist' function as well as ‘ggplot’ and ‘geom_histogram’
