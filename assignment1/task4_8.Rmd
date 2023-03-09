@@ -26,8 +26,9 @@ knitr::opts_chunk$set(
 )
 ```
 ```{r library}
-suppressWarnings(library(dplyr)
-                 library(remotes))
+library(dplyr)
+library(remotes)
+library(ggplot2)
 ```
 ## Task 4
 1. What is the square root of 10?
@@ -105,17 +106,34 @@ useful in your work.
 ## Task 7 - Basic visualization with R
 1. Compare the distributions of the body heights of the two species from the
 'magic_guys.csv' dataset graphically
-a. using the basic 'hist' function as well as ‘ggplot’ and ‘geom_histogram’
+  1. using the basic 'hist' function as well as ‘ggplot’ and ‘geom_histogram’
 functions from the ggplot2 package. Optimize the plots for example by trying
 several different 'breaks'. Note that ggplot2-based functions give you many
 more options for changing the visualization parameters, try some of them.
-b. Do the same comparison as in a. but with boxplots. If you want to use the
+```{r task7.1.1}
+magic_guys <- read.csv('data/magic_guys.csv')
+height2plot <- magic_guys |> group_by(species) |> select(length)
+ggplot(height2plot, aes(x = length, color = species)) +
+  geom_histogram() + theme_classic()
+```
+  2. Do the same comparison as in a. but with boxplots. If you want to use the
 ggplot2-package, use the functions ‘ggplot’ and ‘geom_boxplot’.
-c. Save the plots with the ‘png’, ‘pdf’, and ‘svg’ formats. In which situation would
+```{r task7.1.2, fig.height=1, fig.width=1.1}
+ggplot(height2plot, aes(y = length, color = species)) +
+  geom_boxplot() + theme_classic()
+```
+  3. Save the plots with the ‘png’, ‘pdf’, and ‘svg’ formats. In which situation would
 you use which file format?
+```{r task7.1.3}
+ggsave('figures/species_boxplot.pdf')
+```
+svg: small size, for web distribution
+pdf: rasterize
+png: high quality images used for web distribution
+
 2. Load the gene expression data matrix from the ‘microarray_data.tab’ dataset
 provided in the shared folder, it is a big tabular separated matrix.
-a. How big is the matrix in terms of rows and columns?
+  1. How big is the matrix in terms of rows and columns?
 b. Count the missing values per gene and visualize this result.
 c. Find the genes for which there are more than X% (X=10%, 20%, 50%)
 missing values.
