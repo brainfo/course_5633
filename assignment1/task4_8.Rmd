@@ -29,6 +29,8 @@ knitr::opts_chunk$set(
 library(dplyr)
 library(remotes)
 library(ggplot2)
+library(ggstatsplot)
+library(tidybiology)
 ```
 ## Task 4
 1. What is the square root of 10?
@@ -134,26 +136,86 @@ png: high quality images used for web distribution
 2. Load the gene expression data matrix from the ‘microarray_data.tab’ dataset
 provided in the shared folder, it is a big tabular separated matrix.
   1. How big is the matrix in terms of rows and columns?
+```{r task7.2.1}
+microa <- read.table('data/microarray_data.tab', sep = '\t', header = T)
+dim(microa)
+```
 b. Count the missing values per gene and visualize this result.
+```{r task7.2.1}
+nacount <- colSums(is.na(microa))
+hist(nacount, breaks=20)
+```
 c. Find the genes for which there are more than X% (X=10%, 20%, 50%)
 missing values.
+```{r task7.2.1}
+napercent <- colSums(is.na(microa))/colSums(microa, na.rm=T)
+fifty_genes <- colnames(microa)[napercent>0.5]
+twenty_genes <- colnames(microa)[napercent>0.2]
+ten_genes <- colnames(microa)[napercent>0.1]
+```
 d. Replace the missing values by the average expression value for the particular
 gene. (Note: Imputing data has to be used with caution!)
+```{r task7.2.1}
+microa.impute <- sapply(microa, function(x) {x[is.na(x)]=mean(x, na.rm=T)})
+```
 3. Visualize the data in the CO2 dataset in a way that gives you a deeper understanding
 of the data. What do you see?
-6
-Task 8
+```{r task7.3, fig.width=6}
+CO2.split <- split(CO2, CO2$Type)
+lapply(CO2.split, function(x) {grouped_ggscatterstats(
+  data             = x,
+  x                = conc,
+  y                = uptake,
+  type             = "parametric",
+  grouping.var     = Treatment,
+  ggplot.component = list(geom_rug(sides = "b"))
+)})
+```
+follow similar linear relation
+## Task 8
 1. Install the Tidybiology package, which includes the data ‘chromosome’ and ‘proteins’
 devtools::install_github("hirscheylab/tidybiology")
-a. Extract summary statistics (mean, median and maximum) for the following
+  1. Extract summary statistics (mean, median and maximum) for the following
 variables from the ‘chromosome’ data: variations, protein coding genes, and
 miRNAs. Utilize the tidyverse functions to make this as simply as possible.
-b. How does the chromosome size distribute? Plot a graph that helps to
-visualize this by using ggplot2 package functions.
+```{r task8.1.1}
+data(chromosome)
+select(chromosome, c(variations, protein_codinggenes, mi_rna)) |> summary()
+```
+  2. How does the chromosome size distribute? Plot a graph that helps to visualize this by using ggplot2 package functions.
+```{r task8.1.2}
+ggplot(chromosome, aes(x = id, y=basepairs)) +
+  geom_bar(stat="identity") + theme_classic()
+```
 c. Does the number of protein coding genes or miRNAs correlate with the length
 of the chromosome? Make two separate plots to visualize these relationships.
-d. Calculate the same summary statistics for the ‘proteins’ data variables length
+```{r task8.1.3}
+ggscatterstats(
+  data             = chromosome,
+  x                = basepairs,
+  y                = protein_codinggenes,
+  type             = "parametric"
+)
+ggscatterstats(
+  data             = chromosome,
+  x                = basepairs,
+  y                = mi_rna,
+  type             = "parametric"
+)
+```
+Yes
+  4. Calculate the same summary statistics for the ‘proteins’ data variables length
 and mass. Create a meaningful visualization of the relationship between
 these two variables by utilizing the ggplot2 package functions. Play with the
 colors, theme- and other visualization parameters to create a plot that pleases
 you.
+```{r task8.1.3}
+data(proteins)
+proteins |> select(length, mass) |> summary()
+ggscatterstats(
+  data             = proteins,
+  x                = length,
+  y                = mass,
+  type             = "parametric"
+)
+```
