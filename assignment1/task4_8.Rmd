@@ -31,6 +31,10 @@ library(remotes)
 library(ggplot2)
 library(ggstatsplot)
 library(tidybiology)
+library(utils)
+library(datasets)
+library(stats)
+library(graphics)
 ```
 ## Task 4
 1. What is the square root of 10?
@@ -54,7 +58,7 @@ sum(seq(2,1000,2))
 choose(100, 2)
 ```
 6. And how many ways to arrange 100 genes in triples?
-```{r task4.5}
+```{r task4.6}
 factorial(100)
 ```
 ## Task 5 - Using R example datasets
@@ -96,15 +100,17 @@ mean_noextreme <- function(v) {
 to learn everything, a basic understanding of the usage is enough). Write a short
 (max. 300 characters, no spaces) explanation of why, how, and when not to use
 pipes.  
-- why: more clean and readable
-- how: |>
-- when not: multiple inputs or branches or pipes are too long, consider modulize instead
+> - why: more clean and readable
+> - how: |>
+> - when not: multiple inputs or branches or pipes are too long, consider modulize instead
+
 4. Familiarize yourself with the apply-family of functions (apply, lapply, sapply etc.)
 http://uc-r.github.io/apply_family
 Write a short explanation (max. 300 characters, no spaces) of why they could be
 useful in your work.  
-  1. vectorize speed up the processes on elements in the alterable objects. 
-  2. reduce replicated work
+  > 1. vectorize speed up the processes on elements in the alterable objects. 
+  > 2. reduce replicated work
+  
 ## Task 7 - Basic visualization with R
 1. Compare the distributions of the body heights of the two species from the
 'magic_guys.csv' dataset graphically
@@ -129,9 +135,9 @@ you use which file format?
 ```{r task7.1.3}
 ggsave('figures/species_boxplot.pdf')
 ```
-svg: small size, for web distribution
-pdf: rasterize
-png: high quality images used for web distribution
+> svg: small size, for web distribution
+> pdf: rasterize
+> png: high quality images used for web distribution
 
 2. Load the gene expression data matrix from the ‘microarray_data.tab’ dataset
 provided in the shared folder, it is a big tabular separated matrix.
@@ -140,22 +146,22 @@ provided in the shared folder, it is a big tabular separated matrix.
 microa <- read.table('data/microarray_data.tab', sep = '\t', header = T)
 dim(microa)
 ```
-b. Count the missing values per gene and visualize this result.
-```{r task7.2.1}
+  2. Count the missing values per gene and visualize this result.
+```{r task7.2.2}
 nacount <- colSums(is.na(microa))
 hist(nacount, breaks=20)
 ```
-c. Find the genes for which there are more than X% (X=10%, 20%, 50%)
+  3. Find the genes for which there are more than X% (X=10%, 20%, 50%)
 missing values.
-```{r task7.2.1}
+```{r task7.2.3}
 napercent <- colSums(is.na(microa))/colSums(microa, na.rm=T)
 fifty_genes <- colnames(microa)[napercent>0.5]
 twenty_genes <- colnames(microa)[napercent>0.2]
 ten_genes <- colnames(microa)[napercent>0.1]
 ```
-d. Replace the missing values by the average expression value for the particular
+  4. Replace the missing values by the average expression value for the particular
 gene. (Note: Imputing data has to be used with caution!)
-```{r task7.2.1}
+```{r task7.2.4}
 microa.impute <- sapply(microa, function(x) {x[is.na(x)]=mean(x, na.rm=T)})
 ```
 3. Visualize the data in the CO2 dataset in a way that gives you a deeper understanding
@@ -187,7 +193,7 @@ select(chromosome, c(variations, protein_codinggenes, mi_rna)) |> summary()
 ggplot(chromosome, aes(x = id, y=basepairs)) +
   geom_bar(stat="identity") + theme_classic()
 ```
-c. Does the number of protein coding genes or miRNAs correlate with the length
+  3. Does the number of protein coding genes or miRNAs correlate with the length
 of the chromosome? Make two separate plots to visualize these relationships.
 ```{r task8.1.3}
 ggscatterstats(
@@ -203,13 +209,14 @@ ggscatterstats(
   type             = "parametric"
 )
 ```
-Yes
+ >Yes
+ 
   4. Calculate the same summary statistics for the ‘proteins’ data variables length
 and mass. Create a meaningful visualization of the relationship between
 these two variables by utilizing the ggplot2 package functions. Play with the
 colors, theme- and other visualization parameters to create a plot that pleases
 you.
-```{r task8.1.3}
+```{r task8.1.4}
 data(proteins)
 proteins |> select(length, mass) |> summary()
 ggscatterstats(
