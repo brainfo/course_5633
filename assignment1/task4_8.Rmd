@@ -59,7 +59,7 @@ choose(100, 2)
 ```
 6. And how many ways to arrange 100 genes in triples?
 ```{r task4.6}
-factorial(100)
+choose(100, 3) * factorial(100)
 ```
 ## Task 5 - Using R example datasets
 1. Use the R internal CO2 dataset (“data(CO2)”).
@@ -154,7 +154,7 @@ hist(nacount, breaks=20)
   3. Find the genes for which there are more than X% (X=10%, 20%, 50%)
 missing values.
 ```{r task7.2.3}
-napercent <- colSums(is.na(microa))/colSums(microa, na.rm=T)
+napercent <- colSums(is.na(microa))/colSums(!is.na(microa))
 fifty_genes <- colnames(microa)[napercent>0.5]
 twenty_genes <- colnames(microa)[napercent>0.2]
 ten_genes <- colnames(microa)[napercent>0.1]
